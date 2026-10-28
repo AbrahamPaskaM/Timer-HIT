@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#131F24">
+    <title>HIIT QUEST</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="firebase-config.js"></script>
+    <script src="script.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <dialog id="level-up-modal" aria-labelledby="level-up-title">
+      <div class="modal-content">
+        <b class="star" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.8 1.2 6.9-6.2-3.3-6.2 3.3 1.2-6.9-5-4.8 6.9-1L12 2Z"/></svg></b>
+        <p class="eyebrow">LEVEL BARU!</p>
+        <h2 id="level-up-title">Kamu makin kuat!</h2>
+        <p>Level <strong id="new-level">2</strong> tercapai!</p>
+        <div id="level-rewards"></div>
+        <button class="button primary" id="close-level-up" type="button">LANJUT</button>
+      </div>
+    </dialog>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="HIIT Quest">
+          <i aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13H11.5L9.5 22 19.5 10.5H12.5L14.5 2Z"/></svg></i>
+          <span>HIIT<br><b>QUEST</b></span>
+        </a>
+        <nav class="main-nav" aria-label="Navigasi utama">
+          <button class="nav-link is-active" data-screen="timer" type="button" aria-current="page" aria-label="Timer">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M10 3h4M12 3v2"/></svg>
+            <span><span>Timer</span></span>
+          </button>
+          <button class="nav-link" data-screen="journey" type="button" aria-label="Perjalanan">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4m0 0c3-1.5 6-1.5 9 0s6 1.5 7 0v10c-1 1.5-4 0-7 0s-6 1.5-9 0"/></svg>
+            <span class="nav-full">Perjalanan</span><span class="nav-short" aria-hidden="true">Perjalanan</span>
+          </button>
+          <button class="nav-link" data-screen="profile" type="button" aria-label="Profil">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>
+            <span><span>Profil</span></span>
+          </button>
+        </nav>
+        <div class="sidebar-footer">
+          <svg class="sidebar-mascot" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 8 C53 19, 63 26, 68 28 C74 30, 80 25, 76 37 C85 43, 89 54, 88 67 C87 81, 74 92, 50 92 C26 92, 13 81, 12 67 C11 55, 17 45, 26 39 C24 33, 27 27, 33 26 C36 31, 41 33, 42 27 C44 20, 47 12, 50 8 Z" fill="var(--orange)" stroke="var(--orange-shadow)" stroke-width="3" stroke-linejoin="round"/><path d="M50 42 C56 48, 64 54, 66 63 C69 74, 62 84, 50 84 C38 84, 31 74, 34 63 C36 54, 44 48, 50 42 Z" fill="var(--yellow)"/><ellipse cx="32" cy="69" rx="5" ry="3.2" fill="var(--orange-shadow)" opacity="0.35"/><ellipse cx="68" cy="69" rx="5" ry="3.2" fill="var(--orange-shadow)" opacity="0.35"/><circle cx="38" cy="63" r="4.5" fill="var(--button-text)"/><circle cx="62" cy="63" r="4.5" fill="var(--button-text)"/><circle cx="36.5" cy="61.5" r="1.6" fill="#FFFFFF"/><circle cx="60.5" cy="61.5" r="1.6" fill="#FFFFFF"/><path d="M44 72 Q50 78 56 72" fill="none" stroke="var(--button-text)" stroke-width="3" stroke-linecap="round"/></svg>
+          <p>GERAK KECIL,<br>MENANG BESAR.</p>
+        </div>
+      </aside>
+
+      <main class="app-shell">
+        <header class="app-header">
+          <a class="brand mobile" href="#" aria-label="HIIT Quest">
+            <i aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13H11.5L9.5 22 19.5 10.5H12.5L14.5 2Z"/></svg></i><span>HIIT QUEST</span>
+          </a>
+          <div class="status" aria-label="Progres saat ini">
+            <button class="pill streak-display" id="streak-display" type="button" title="Streak">
+              <svg class="status-icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2 C13 5, 16 7, 17 8 C19 10, 20 12, 20 15 C20 19, 16.5 22, 12 22 C7.5 22, 4 19, 4 15 C4 12, 5.5 9.5, 7.5 8 C7.2 9.5, 8 11, 9 11.5 C9 9, 10 5, 12 2 Z"/></svg><b id="streak-count">0</b><small>hari</small><span id="streak-shield" hidden aria-hidden="true"><svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L4 6.5 V12 C4 17 7.5 20.5 12 22 C16.5 20.5 20 17 20 12 V6.5 L12 3 Z"/><path d="M12 8v8M8 12h8"/></svg></span>
+            </button>
+            <span class="pill xp"><svg class="status-icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13 2 4.5 13H11.5L9.5 22 19.5 10.5H12.5L14.5 2Z"/></svg><b id="xp-text">0 / 100 XP</b></span>
+            <span class="level-badge" id="level-badge">LV 1</span>
+          </div>
+        </header>
+
+        <section class="screen" id="settings-screen" aria-labelledby="settings-title">
+          <div id="streak-warning" class="warning" hidden>Api streak-mu butuh bahan bakar! Latihan sekarang.</div>
+          <div class="hero">
+            <div>
+              <p class="eyebrow">MISI HARI INI</p>
+              <h1 id="settings-title">Siap bikin<br><em>keringat bangga?</em></h1>
+              <p>Satu sesi kecil cukup untuk menjaga api tetap menyala.</p>
+            </div>
+            <div class="mascot">
+              <span id="mascot-speech">Siap bergerak?</span>
+              <svg viewBox="0 0 100 100" role="img" aria-label="Maskot api">
+                <path d="M50 8 C53 19, 63 26, 68 28 C74 30, 80 25, 76 37 C85 43, 89 54, 88 67 C87 81, 74 92, 50 92 C26 92, 13 81, 12 67 C11 55, 17 45, 26 39 C24 33, 27 27, 33 26 C36 31, 41 33, 42 27 C44 20, 47 12, 50 8 Z" fill="var(--orange)" stroke="var(--orange-shadow)" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M50 42 C56 48, 64 54, 66 63 C69 74, 62 84, 50 84 C38 84, 31 74, 34 63 C36 54, 44 48, 50 42 Z" fill="var(--yellow)"/>
+                <ellipse cx="32" cy="69" rx="5" ry="3.2" fill="var(--orange-shadow)" opacity="0.35"/>
+                <ellipse cx="68" cy="69" rx="5" ry="3.2" fill="var(--orange-shadow)" opacity="0.35"/>
+                <g fill="var(--button-text)">
+                  <ellipse cx="38" cy="63" rx="4.5" ry="5.5"/>
+                  <ellipse cx="62" cy="63" rx="4.5" ry="5.5"/>
+                </g>
+                <circle cx="36.5" cy="61" r="1.8" fill="#FFFFFF"/>
+                <circle cx="60.5" cy="61" r="1.8" fill="#FFFFFF"/>
+                <circle cx="39.5" cy="64.5" r="0.8" fill="#FFFFFF"/>
+                <circle cx="63.5" cy="64.5" r="0.8" fill="#FFFFFF"/>
+                <path d="M44 72 Q50 78 56 72" fill="none" stroke="var(--button-text)" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <article class="card weekly">
+            <div><p class="eyebrow">STREAK MINGGUAN</p><b id="weekly-message">Nyalakan api pertamamu!</b></div>
+            <div id="week-dots" class="week"></div>
+          </article>
+
+          <form id="settings-form" novalidate>
+            <section class="card settings">
+              <div class="heading">
+                <div><p class="eyebrow">PILIH MISI</p><h2>Atur latihanmu</h2></div>
+                <b class="mini-xp">+<span id="potential-xp">100</span> XP</b>
+              </div>
+              <div class="presets">
+                <button class="preset-button" id="tabata-preset" data-preset="tabata" type="button">Tabata <small>20 / 10</small></button>
+                <button class="preset-button" data-preset="beginner" type="button">Pemula <small>30 / 30</small></button>
+                <button class="preset-button" data-preset="strong" type="button">Kuat <small>45 / 15</small></button>
+                <button class="preset-button active" data-preset="custom" type="button">Kustom <small>Atur sendiri</small></button>
+              </div>
+
+              <div class="input-grid">
+                <div class="field">
+                  <label for="prep-duration">Persiapan</label>
+                  <div class="stepper"><button type="button" class="step" data-step="-1" data-for="prep-duration" aria-label="Kurangi durasi persiapan">−</button><span class="step-value"><input class="step-input" id="prep-duration" name="prep" type="text" inputmode="numeric" pattern="[0-9]*" value="3" role="spinbutton" aria-label="Durasi persiapan dalam detik" aria-valuenow="3" aria-valuemin="0" aria-valuemax="60" aria-describedby="prep-help prep-error" required><span>detik</span></span><button type="button" class="step" data-step="1" data-for="prep-duration" aria-label="Tambah durasi persiapan">+</button></div>
+                  <small id="prep-help">Rentang 0–60 detik</small><small id="prep-error" class="field-error"></small>
+                </div>
+                <div class="field">
+                  <label for="work-duration">Kerja</label>
+                  <div class="stepper"><button type="button" class="step" data-step="-1" data-for="work-duration" aria-label="Kurangi durasi kerja">−</button><span class="step-value"><input class="step-input" id="work-duration" name="work" type="text" inputmode="numeric" pattern="[0-9]*" value="30" role="spinbutton" aria-label="Durasi kerja dalam detik" aria-valuenow="30" aria-valuemin="1" aria-valuemax="3600" aria-describedby="work-help work-error" required><span>detik</span></span><button type="button" class="step" data-step="1" data-for="work-duration" aria-label="Tambah durasi kerja">+</button></div>
+                  <small id="work-help">Rentang 1–3.600 detik</small><small id="work-error" class="field-error"></small>
+                </div>
+                <div class="field">
+                  <label for="rest-duration">Istirahat</label>
+                  <div class="stepper"><button type="button" class="step" data-step="-1" data-for="rest-duration" aria-label="Kurangi durasi istirahat">−</button><span class="step-value"><input class="step-input" id="rest-duration" name="rest" type="text" inputmode="numeric" pattern="[0-9]*" value="15" role="spinbutton" aria-label="Durasi istirahat dalam detik" aria-valuenow="15" aria-valuemin="1" aria-valuemax="3600" aria-describedby="rest-help rest-error" required><span>detik</span></span><button type="button" class="step" data-step="1" data-for="rest-duration" aria-label="Tambah durasi istirahat">+</button></div>
+                  <small id="rest-help">Rentang 1–3.600 detik</small><small id="rest-error" class="field-error"></small>
+                </div>
+                <div class="field">
+                  <label for="round-count">Ronde</label>
+                  <div class="stepper"><button type="button" class="step" data-step="-1" data-for="round-count" aria-label="Kurangi jumlah ronde">−</button><span class="step-value"><input class="step-input" id="round-count" name="rounds" type="text" inputmode="numeric" pattern="[0-9]*" value="8" role="spinbutton" aria-label="Jumlah ronde" aria-valuenow="8" aria-valuemin="1" aria-valuemax="100" aria-describedby="round-help rounds-error" required><span>ronde</span></span><button type="button" class="step" data-step="1" data-for="round-count" aria-label="Tambah jumlah ronde">+</button></div>
+                  <small id="round-help">Rentang 1–100 ronde</small><small id="rounds-error" class="field-error"></small>
+                </div>
+              </div>
+
+              <div id="form-error" role="alert"></div>
+              <div class="summary">
+                <div><small>ESTIMASI DURASI</small><strong id="duration-estimate">04:00</strong></div>
+                <div class="xp-preview"><small>XP SETELAH LATIHAN</small><strong class="summary-xp" id="xp-preview-label">0 → 0 / 100 XP</strong><i aria-hidden="true"><b id="xp-current-fill"></b><b id="xp-preview-fill"></b></i></div>
+                <p id="work-validity-hint" class="work-validity-hint" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 11v6m0-9v1"/></svg><span>Di bawah 1 menit kerja tidak menambah XP/streak</span></p>
+              </div>
+              <fieldset class="audio-settings" aria-labelledby="audio-settings-heading">
+                <div class="audio-heading" id="audio-settings-heading">Suara &amp; umpan balik</div>
+                <label class="audio-row"><span><b>Efek suara</b><small>Suara saat latihan berjalan</small></span><span class="switch-wrap"><input id="sound-enabled" type="checkbox" role="switch" aria-label="Efek suara" checked><i></i></span></label>
+                <label class="audio-row"><span><b>Hitung mundur 3-2-1</b><small>Bip menjelang fase berakhir</small></span><span class="switch-wrap"><input id="countdown-enabled" type="checkbox" role="switch" aria-label="Hitung mundur 3-2-1" checked><i></i></span></label>
+                <label class="audio-row"><span><b>Peluit pergantian fase</b><small>Penanda kerja dan istirahat</small></span><span class="switch-wrap"><input id="transition-enabled" type="checkbox" role="switch" aria-label="Peluit pergantian fase" checked><i></i></span></label>
+              </fieldset>
+              <div class="sticky-cta"><button class="button primary full" type="submit">MULAI LATIHAN</button></div>
+            </section>
+          </form>
+        </section>
+
+        <section class="screen workout" id="workout-screen" hidden aria-labelledby="phase-label">
+          <div class="phase-sweep" id="phase-sweep" aria-hidden="true"></div>
+          <div class="workout-content">
+          <div class="top"><button class="mini-close" id="close-workout-button" type="button" aria-label="Tutup latihan">×</button><span>RONDE <strong id="current-round">1</strong> / <span id="total-rounds">8</span></span></div>
+          <div class="timer-card" id="timer-card" data-phase="prep">
+            <b class="phase-chip" id="phase-label" aria-live="polite">PERSIAPAN</b>
+            <div id="round-track" class="round-track" role="img" aria-label="Progres ronde"></div>
+            <div class="timer-dial" id="timer-dial" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progres waktu fase">
+              <svg viewBox="0 0 220 220" aria-hidden="true"><circle class="dial-track" cx="110" cy="110" r="96"/><circle class="dial-progress" id="dial-progress" cx="110" cy="110" r="96"/></svg>
+              <div><b id="timer-value" class="timer-value" role="timer" aria-live="polite">3</b><p id="timer-unit">Detik persiapan</p></div>
+            </div>
+            <p class="next-phase-line">Berikutnya: <strong id="next-phase">KERJA</strong></p>
+          </div>
+          <div class="workout-mascot" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 8 C53 19, 63 26, 68 28 C74 30, 80 25, 76 37 C85 43, 89 54, 88 67 C87 81, 74 92, 50 92 C26 92, 13 81, 12 67 C11 55, 17 45, 26 39 C24 33, 27 27, 33 26 C36 31, 41 33, 42 27 C44 20, 47 12, 50 8 Z" fill="currentColor" stroke="var(--orange-shadow)" stroke-width="3" stroke-linejoin="round"/><path d="M50 42 C56 48, 64 54, 66 63 C69 74, 62 84, 50 84 C38 84, 31 74, 34 63 C36 54, 44 48, 50 42 Z" fill="var(--yellow)"/><ellipse cx="32" cy="69" rx="5" ry="3.2" fill="var(--orange-shadow)" opacity="0.35"/><ellipse cx="68" cy="69" rx="5" ry="3.2" fill="var(--orange-shadow)" opacity="0.35"/><g class="face-work"><g fill="none" stroke="var(--button-text)" stroke-linecap="round" stroke-width="3"><path d="M34 64 Q38 58 43 64"/><path d="M57 64 Q62 58 66 64"/></g><path d="M43 70 Q50 80 57 70 Z" fill="var(--button-text)"/><path d="M46 73 Q50 78 54 73" fill="var(--red)"/><path d="M75 50 C76 46, 78 43, 79 43 C80 43, 82 46, 83 50 C83 52, 81 54, 79 54 C77 54, 75 52, 75 50 Z" fill="var(--blue)"/></g><g class="face-rest"><g fill="none" stroke="var(--button-text)" stroke-linecap="round" stroke-width="3"><path d="M34 62 Q39 65 43 62"/><path d="M57 62 Q61 65 66 62"/></g><ellipse cx="50" cy="73" rx="3" ry="3.2" fill="var(--button-text)"/></g><g class="face-prep"><g fill="none" stroke="var(--button-text)" stroke-linecap="round" stroke-width="2.2"><path d="M35 56 L42 58"/><path d="M65 56 L58 58"/></g><circle cx="39" cy="63" r="4.2" fill="var(--button-text)"/><circle cx="61" cy="63" r="4.2" fill="var(--button-text)"/><circle cx="37.5" cy="61.5" r="1.5" fill="#FFFFFF"/><circle cx="59.5" cy="61.5" r="1.5" fill="#FFFFFF"/><path d="M45 73 L55 73" stroke="var(--button-text)" stroke-width="3" stroke-linecap="round"/></g></svg></div>
+          <h2 id="workout-cheer">Kamu bisa! Jangan kasih kendor.</h2>
+          <div class="actions"><button class="button secondary" id="pause-button" type="button">Jeda</button><button class="button danger" id="reset-button" type="button">Berhenti</button></div>
+          <button id="back-button" type="button" hidden aria-hidden="true">Kembali</button>
+          <p id="wake-status" class="micro-status"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.93 4.93l1.8 1.8M17.27 17.27l1.8 1.8M4.93 19.07l1.8-1.8M17.27 6.73l1.8-1.8"/></svg><span>Layar dijaga tetap menyala</span></p><p id="audio-status" class="micro-status"></p>
+          </div>
+        </section>
+
+        <section class="screen done" id="done-screen" hidden aria-labelledby="done-title">
+          <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+          <div class="done-content">
+            <svg class="done-mascot" viewBox="0 0 100 100" role="img" aria-label="Maskot api"><path d="M50 8 C53 19, 63 26, 68 28 C74 30, 80 25, 76 37 C85 43, 89 54, 88 67 C87 81, 74 92, 50 92 C26 92, 13 81, 12 67 C11 55, 17 45, 26 39 C24 33, 27 27, 33 26 C36 31, 41 33, 42 27 C44 20, 47 12, 50 8 Z" fill="var(--orange)" stroke="var(--orange-shadow)" stroke-width="3" stroke-linejoin="round"/><path d="M50 42 C56 48, 64 54, 66 63 C69 74, 62 84, 50 84 C38 84, 31 74, 34 63 C36 54, 44 48, 50 42 Z" fill="var(--yellow)"/><ellipse cx="32" cy="69" rx="5" ry="3.2" fill="var(--orange-shadow)" opacity="0.35"/><ellipse cx="68" cy="69" rx="5" ry="3.2" fill="var(--orange-shadow)" opacity="0.35"/><g class="face-happy"><g fill="none" stroke="var(--button-text)" stroke-linecap="round" stroke-width="3.2"><path d="M34 63 Q38 56 43 63"/><path d="M57 63 Q62 56 66 63"/></g><path d="M42 69 Q50 82 58 69 Z" fill="var(--button-text)"/><path d="M45 74 Q50 79 55 74" fill="var(--red)"/><path d="M80 24 L82 29 L87 31 L82 33 L80 38 L78 33 L73 31 L78 29 Z" fill="var(--yellow)"/></g><g class="face-calm"><g fill="none" stroke="var(--button-text)" stroke-linecap="round" stroke-width="3"><path d="M34 63 Q39 60 43 63"/><path d="M57 63 Q61 60 66 63"/></g><circle cx="38.5" cy="63" r="2.5" fill="var(--button-text)"/><circle cx="61.5" cy="63" r="2.5" fill="var(--button-text)"/><circle cx="37.5" cy="62" r="1" fill="#FFFFFF"/><circle cx="60.5" cy="62" r="1" fill="#FFFFFF"/><path d="M45 73 Q50 77 55 73" fill="none" stroke="var(--button-text)" stroke-width="2.8" stroke-linecap="round"/></g></svg>
+            <p class="eyebrow" id="done-eyebrow">MISI SELESAI!</p><h1 id="done-title">Hebat, jagoan!</h1>
+            <p id="done-message">Kamu menuntaskan latihanmu. Apimu makin besar!</p>
+            <div class="done-summary-line"><span id="done-duration">03:53</span><span aria-hidden="true">·</span><span id="completed-rounds">8/8 ronde</span></div>
+            <div class="done-rewards">
+              <article class="done-reward xp-reward"><strong id="earned-xp">+100</strong><span>XP didapat</span></article>
+              <article class="done-reward streak-reward"><strong><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2 C13 5, 16 7, 17 8 C19 10, 20 12, 20 15 C20 19, 16.5 22, 12 22 C7.5 22, 4 19, 4 15 C4 12, 5.5 9.5, 7.5 8 C7.2 9.5, 8 11, 9 11.5 C9 9, 10 5, 12 2 Z"/></svg><span id="done-streak">0</span></strong><span>Streak</span></article>
+            </div>
+            <div class="done-level-progress"><div><span id="done-xp-level-label">0 / 100 XP</span><span id="done-next-level">Menuju Level 2</span></div><i><b id="done-level-fill"></b></i></div>
+            <p id="session-save-status" class="session-save-status" data-state="pending"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6.5"/></svg><span>Menunggu penyimpanan cloud</span></p>
+            <div class="done-actions">
+              <button class="button primary full" id="done-settings-button" type="button">Selesai</button>
+              <button class="button secondary full" id="done-restart-button" type="button">Latihan Lagi</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen journey" id="history-screen" hidden aria-labelledby="history-title">
+          <p class="eyebrow">PERJALANAN</p><h1 id="history-title">Perjalananmu</h1><p class="history-description" id="journey-subtitle">Memuat progresmu...</p>
+          <div class="range-control" role="group" aria-label="Rentang statistik">
+            <button type="button" data-range="7" class="active" aria-pressed="true">7 hari</button><button type="button" data-range="30" aria-pressed="false">30 hari</button><button type="button" data-range="all" aria-pressed="false">Semua</button>
+          </div>
+          <div class="journey-stats" id="journey-stats">
+            <article class="journey-stat stat-sessions"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a2 2 0 0 1 2 2v1H7V5a2 2 0 0 1 2-2Z"/><rect x="4" y="6" width="16" height="15" rx="2.5"/><path d="M8 11h8M8 15h5"/></svg><strong id="stat-activities">0</strong><span>Total sesi</span><small id="stat-valid-caption">0 sah untuk streak</small></article>
+            <article class="journey-stat stat-duration"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M10 3h4M12 3v2M18.5 6.5l1.5-1.5"/></svg><strong id="stat-duration">0 dtk</strong><span>Waktu latihan</span></article>
+            <article class="journey-stat stat-xp"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13 2 4.5 13H11.5L9.5 22 19.5 10.5H12.5L14.5 2Z"/></svg><strong id="stat-total-xp">0</strong><span>Total XP</span></article>
+            <article class="journey-stat stat-streak"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2 C13 5, 16 7, 17 8 C19 10, 20 12, 20 15 C20 19, 16.5 22, 12 22 C7.5 22, 4 19, 4 15 C4 12, 5.5 9.5, 7.5 8 C7.2 9.5, 8 11, 9 11.5 C9 9, 10 5, 12 2 Z"/></svg><strong id="stat-longest-streak">0</strong><span>Streak terpanjang</span></article>
+          </div>
+          <article class="card activity-chart-card"><h2>Waktu latihan per hari</h2><div id="activity-chart" role="img" aria-label="Grafik waktu latihan selama tujuh hari"></div></article>
+          <section class="history-section">
+            <div class="history-section-heading"><h2>Riwayat latihan</h2><span id="history-count">0 aktivitas</span></div>
+            <div id="history-feedback" role="status" aria-live="polite"></div><div id="history-list"></div>
+            <button class="button secondary full" id="load-more-button" type="button" hidden>Muat lebih banyak</button>
+          </section>
+        </section>
+
+        <section class="screen profile" id="profile-screen" hidden>
+          <p class="eyebrow">PROFIL PETUALANG</p>
+          <div class="profile-head"><b aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13H11.5L9.5 22 19.5 10.5H12.5L14.5 2Z"/></svg></b><div><h1>Pejuang HIIT</h1><p id="profile-level">Level 1 · Baru mulai</p></div></div>
+          <div class="card profile-xp"><small>Total XP</small><strong id="profile-total-xp">0</strong><i><b id="profile-xp-fill"></b></i><p id="profile-xp-caption">0 / 100 XP - 100 XP lagi ke Level 2</p></div>
+          <h2>Lemari lencana</h2>
+          <div class="badges" id="profile-badges"></div>
+          <div class="card toggles"><label>Getar saat ganti fase <span class="switch-wrap"><input id="vibration-toggle" type="checkbox" role="switch" aria-label="Getar saat ganti fase" checked><i></i></span></label></div>
+          <details class="advanced-settings">
+          <summary>Pengaturan lanjutan</summary>
+          <div class="card toggles">
+            <label for="test-mode-toggle">Mode uji: abaikan batas minimal 1 menit</label>
+            <p class="test-mode-warning">Peringatan: mode ini mengabaikan batas sesi sah. Default: mati.</p>
+            <span class="switch-wrap"><input id="test-mode-toggle" type="checkbox" role="switch" aria-label="Mode uji: abaikan batas minimal 1 menit"><i></i></span>
+          </div>
+          </details>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="history-dialog" class="history-sheet" aria-labelledby="detail-title"><div class="sheet-handle" aria-hidden="true"></div><button id="close-detail-button" type="button" aria-label="Tutup detail">×</button><h2 id="detail-title">Detail sesi</h2><div id="detail-content"></div><div id="detail-actions"></div></dialog>
+    <dialog id="stop-confirmation-modal" aria-labelledby="stop-confirmation-title">
+      <div class="modal-content">
+        <h2 id="stop-confirmation-title">Yakin berhenti?</h2>
+        <p>Streak-mu aman jika sudah menyelesaikan minimal 1 ronde.</p>
+        <div class="modal-actions"><button class="button primary" id="continue-workout-button" type="button">Lanjut latihan</button><button class="button danger" id="confirm-stop-button" type="button">Berhenti</button></div>
+      </div>
+    </dialog>
+  </body>
+</html>

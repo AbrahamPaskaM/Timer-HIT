@@ -1,0 +1,49 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/workoutHistory/{workoutId} {
+      function isOwner() {
+        return request.auth != null && request.auth.uid == uid;
+      }
+
+      allow read, delete: if isOwner();
+      allow create: if isOwner()
+        && request.resource.data.keys().hasOnly([
+          "name", "status", "startedAt", "completedAt", "actualDurationSeconds",
+          "workDuration", "restDuration", "preparationDuration", "totalRounds",
+          "completedRounds", "sound", "createdAt"
+        ])
+        && request.resource.data.keys().hasAll([
+          "name", "status", "startedAt", "completedAt", "actualDurationSeconds",
+          "workDuration", "restDuration", "preparationDuration", "totalRounds",
+          "completedRounds", "sound", "createdAt"
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.status in ["completed", "cancelled"]
+        && request.resource.data.startedAt is timestamp
+        && request.resource.data.completedAt is timestamp
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.actualDurationSeconds is int
+        && request.resource.data.actualDurationSeconds >= 0
+        && request.resource.data.workDuration is int
+        && request.resource.data.workDuration >= 1
+        && request.resource.data.restDuration is int
+        && request.resource.data.restDuration >= 1
+        && request.resource.data.preparationDuration is int
+        && request.resource.data.preparationDuration >= 0
+        && request.resource.data.preparationDuration <= 60
+        && request.resource.data.totalRounds is int
+        && request.resource.data.totalRounds >= 1
+        && request.resource.data.totalRounds <= 100
+        && request.resource.data.completedRounds is int
+        && request.resource.data.completedRounds >= 0
+        && request.resource.data.completedRounds <= request.resource.data.totalRounds
+        && (request.resource.data.status != "completed"
+          || request.resource.data.completedRounds == request.resource.data.totalRounds)
+        && request.resource.data.sound is map;
+
+      allow update: if false;
+    }
+  }
+}
