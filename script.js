@@ -477,7 +477,7 @@ function renderTimer(now = performance.now()) {
     roundTrack.setAttribute("aria-label", `Progres ${completedRoundCount} dari ${session.settings.rounds} ronde selesai`);
     roundTrack.replaceChildren(...Array.from({ length: session.settings.rounds }, (_, index) => {
       const dot = document.createElement("i");
-      dot.className = `round-dot${index < completedRoundCount ? " done" : index === completedRoundCount ? " current" : ""}`;
+      dot.className = `round-dot${index < completedRoundCount ? " completed" : index === completedRoundCount ? " current" : ""}`;
       dot.setAttribute("aria-hidden", "true");
       return dot;
     }));
@@ -714,9 +714,6 @@ function enterPhase(phase, deadline, playWhistle = true) {
 
   if (workoutScreen) {
     workoutScreen.dataset.phase = phase;
-    workoutScreen.classList.remove("is-sweeping");
-    void workoutScreen.offsetWidth;
-    workoutScreen.classList.add("is-sweeping");
   }
 
   dialProgress.style.transition = "none";
@@ -858,7 +855,6 @@ function clearCachedSession() {
 function finishSession(playCompletionSound = true) {
   clearInterval(timerId);
   timerId = null;
-  if (workoutScreen) workoutScreen.classList.remove("is-sweeping");
   session.activeElapsedMs += Math.max(0, performance.now() - session.activeStartedAt);
   session.activeStartedAt = null;
   session.phase = "done";
@@ -983,9 +979,6 @@ function startSession(settings) {
 
   if (workoutScreen) {
     workoutScreen.dataset.phase = initialPhase;
-    workoutScreen.classList.remove("is-sweeping");
-    void workoutScreen.offsetWidth;
-    workoutScreen.classList.add("is-sweeping");
   }
 
   dialProgress.style.transition = "none";
@@ -1003,7 +996,6 @@ function startSession(settings) {
 function resetToSettings() {
   const stopDialog = document.getElementById("stop-confirmation-modal");
   if (stopDialog.open) stopDialog.close();
-  if (workoutScreen) workoutScreen.classList.remove("is-sweeping");
   if (session && session.phase !== "done") void saveWorkoutRecord(session, "cancelled", getCompletedRounds(session));
   clearInterval(timerId);
   timerId = null;

@@ -672,7 +672,7 @@ h1 em { color: var(--green); font-style: normal; }
 }
 
 .workout[hidden],
-.done[hidden] {
+.screen.done[hidden] {
   display: none !important;
 }
 
@@ -711,46 +711,6 @@ h1 em { color: var(--green); font-style: normal; }
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-}
-
-.phase-sweep {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: var(--phase-bg);
-  clip-path: ellipse(0% 0% at 50% 50%);
-  opacity: 0;
-}
-
-.workout.is-sweeping .phase-sweep {
-  animation: ellipse-sweep 400ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-@keyframes ellipse-sweep {
-  0% {
-    opacity: 1;
-    clip-path: ellipse(0% 0% at 50% 50%);
-  }
-  99% {
-    opacity: 1;
-    clip-path: ellipse(140% 140% at 50% 50%);
-  }
-  100% {
-    opacity: 0;
-    clip-path: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .workout.is-sweeping .phase-sweep {
-    animation: fade-sweep 150ms ease forwards;
-  }
-  @keyframes fade-sweep {
-    0% { opacity: 0; }
-    50% { opacity: 1; }
-    100% { opacity: 0; }
-  }
 }
 
 .top {
@@ -808,6 +768,7 @@ h1 em { color: var(--green); font-style: normal; }
   background: rgba(255, 255, 255, 0.2);
   transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
+.round-dot.completed,
 .round-dot.done {
   background: #FFFFFF;
   opacity: 0.95;
@@ -957,10 +918,10 @@ h1 em { color: var(--green); font-style: normal; }
   color: var(--text-muted);
 }
 
-.done {
+.screen.done {
   text-align: center;
 }
-.done > b {
+.screen.done > b {
   display: grid;
   place-items: center;
   width: 108px;
@@ -972,23 +933,23 @@ h1 em { color: var(--green); font-style: normal; }
   color: var(--button-text);
   font-size: 62px;
 }
-.done > b svg { width: 64px; height: 64px; fill: currentColor; }
-.done > p {
+.screen.done > b svg { width: 64px; height: 64px; fill: currentColor; }
+.screen.done > p {
   color: var(--text-muted);
 }
-.done > div {
+.screen.done > div {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin: 22px 0;
 }
-.done > div span {
+.screen.done > div span {
   padding: 16px;
   border: 2px solid var(--border);
   border-radius: 16px;
   background: var(--surface);
 }
-.done > div b {
+.screen.done > div b {
   display: block;
   font-size: 28px;
   color: var(--orange);
@@ -1929,7 +1890,7 @@ small { font-size: 13px; }
 .session-overlay .sidebar,
 .session-overlay .app-header { visibility: hidden; }
 .level-badge { color: var(--text); }
-.done {
+.screen.done {
   position: fixed;
   inset: 0;
   z-index: 120;
@@ -1957,7 +1918,7 @@ small { font-size: 13px; }
   font-size: 16px;
   font-weight: 800;
 }
-.done > .done-content { grid-template-columns: 1fr; margin: 0; }
+.screen.done > .done-content { grid-template-columns: 1fr; margin: 0; }
 .done-mascot { width: 140px; height: 140px; animation: mascot-hop 600ms ease-in-out 2; }
 .done-content > .eyebrow { margin: 0; }
 .done-content h1 { font-size: clamp(2rem, 6vw, 3rem); }
@@ -2061,7 +2022,7 @@ small { font-size: 13px; }
   .workout { padding: 74px 16px 18px; }
   .workout .round-track { margin-bottom: 14px; }
   .timer-dial { width: min(82vw, 330px); }
-  .done { padding: 16px; }
+  .screen.done { padding: 16px; }
   .done-content { gap: 9px; }
   .done-mascot { width: 140px; height: 140px; }
 }
@@ -2194,7 +2155,7 @@ small { font-size: 13px; }
 .workout h2 { margin: 24px 0; }
 .workout .actions { width: 100%; }
 .workout .actions .button { min-height: 52px; }
-.done:not([hidden]) {
+.screen.done:not([hidden]) {
   position: fixed;
   inset: 0;
   z-index: 120;
@@ -2204,7 +2165,7 @@ small { font-size: 13px; }
   padding: 24px;
   background: var(--bg);
 }
-.done > .done-content {
+.screen.done > .done-content {
   display: grid;
   grid-template-columns: 1fr;
   justify-items: center;
@@ -2225,7 +2186,7 @@ small { font-size: 13px; }
   border-radius: 0;
   background: transparent;
 }
-.done > .done-content span {
+.screen.done > .done-content span {
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -2277,10 +2238,10 @@ small { font-size: 13px; }
 .done-mascot { animation: none; }
 .done-mascot .face-happy,
 .done-mascot .face-calm { display: none; }
-.done[data-valid="true"] .done-mascot { animation: mascot-hop 600ms ease-in-out 2; }
-.done[data-valid="true"] .done-mascot .face-happy { display: initial; }
-.done[data-valid="false"] .done-mascot .face-calm { display: initial; }
-.done[data-valid="false"] .streak-reward svg { animation: none; }
+.screen.done[data-valid="true"] .done-mascot { animation: mascot-hop 600ms ease-in-out 2; }
+.screen.done[data-valid="true"] .done-mascot .face-happy { display: initial; }
+.screen.done[data-valid="false"] .done-mascot .face-calm { display: initial; }
+.screen.done[data-valid="false"] .streak-reward svg { animation: none; }
 .session-overlay .sidebar,
 .session-overlay .app-header { visibility: hidden; }
 .session-overlay .app-shell {
@@ -2337,7 +2298,7 @@ small { font-size: 13px; }
   .workout-content > .top { top: 0; }
   .workout-mascot { margin-top: 16px; }
   .workout h2 { margin: 24px 0; }
-  .done:not([hidden]) { padding: 16px; }
+  .screen.done:not([hidden]) { padding: 16px; }
   .done-content { gap: 9px; }
 }
 @media (max-width: 380px) {
@@ -2345,14 +2306,14 @@ small { font-size: 13px; }
   .done-mascot { width: 128px; height: 128px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .done[data-valid="true"] .done-mascot { animation: none; }
+  .screen.done[data-valid="true"] .done-mascot { animation: none; }
 }
 
 /* ===== P0: Crossfade transisi workout → done (tanpa oval) ===== */
-.done {
+.screen.done {
   animation: none;
 }
-.done:not([hidden]) {
+.screen.done:not([hidden]) {
   animation: done-fadein 0.3s ease both;
 }
 @keyframes done-fadein {
@@ -2360,7 +2321,7 @@ small { font-size: 13px; }
   to   { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .done:not([hidden]) { animation: none; }
+  .screen.done:not([hidden]) { animation: none; }
 }
 
 /* ===== P1 Stepper: input transparan, focus-within ring ===== */
